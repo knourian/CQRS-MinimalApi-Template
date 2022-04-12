@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PEX.Domain.Model
-{
-	public abstract class BaseIntEntity
-	{
+namespace PEX.Domain.Model;
 
-	}
+public abstract class BaseIntEntity
+{
+
 }
