@@ -4,9 +4,5 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PEX.Domain.Model;
-
-public abstract class BaseIntEntity : BaseEntity<int>
-{
-
-}
+namespace PEX.Api.Contracts;
+public interface IAssemblyMarker { }

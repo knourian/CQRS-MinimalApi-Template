@@ -1,8 +1,11 @@
-﻿using MediatR;
+﻿using FluentValidation;
+
+using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
+using PEX.Api.Contracts;
 using PEX.Application.Contracts;
 using PEX.Infrastructure.Database;
 
@@ -26,10 +29,10 @@ public static class ServiceCollectionExtensions
 
 		var connectionString = builder.Configuration.GetConnectionString("Default");
 		builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(connectionString));
-
 		builder.Services.AddMediatR(typeof(Program));
 		builder.Services.AddAutoMapper(typeof(Program));
 		builder.Services.AddAllModules(typeof(Program));
+		builder.Services.AddValidatorsFromAssemblyContaining(typeof(IAssemblyMarker));
 
 		return services;
 	}

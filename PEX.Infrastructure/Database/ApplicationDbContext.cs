@@ -18,4 +18,6 @@ public class ApplicationDbContext : DbContext
 
 	}
 
+
+	public DbSet<Author> Authors { get; set; } = default!;
 }
