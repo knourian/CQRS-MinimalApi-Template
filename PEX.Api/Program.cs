@@ -1,16 +1,11 @@
-var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+using PEX.Api.Extensions;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddApplicationServices(builder);
 
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
-
+app.ConfigureApplication();
+app.RegisterEndpoints();
 
 app.Run();
-
