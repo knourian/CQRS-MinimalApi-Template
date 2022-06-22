@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PEX.Api.Extensions;
+﻿namespace PEX.Api.Extensions;
 public static class WebApplicationExtensions
 {
-	public static WebApplication ConfigureApplication(this WebApplication app)
-	{
-		if (app == null)
-		{
-			throw new ArgumentNullException(nameof(app));
-		}
+    public static WebApplication ConfigureApplication(this WebApplication app)
+    {
+        if (app == null)
+        {
+            throw new ArgumentNullException(nameof(app));
+        }
 
-		if (app.Environment.IsDevelopment())
-		{
-			app.UseSwagger();
-			app.UseSwaggerUI();
-		}
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
 
-		app.UseHttpsRedirection();
+        app.UseHttpsRedirection();
 
-		return app;
-	}
+        return app;
+    }
 }

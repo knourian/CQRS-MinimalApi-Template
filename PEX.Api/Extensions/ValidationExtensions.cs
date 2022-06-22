@@ -3,51 +3,51 @@
 namespace PEX.Api.Extensions;
 public static class ValidationExtensions
 {
-	public static RouteHandlerBuilder WithValidator<TType>(
-		this RouteHandlerBuilder builder) where TType : class
-	{
-		if (builder is null)
-		{
-			throw new ArgumentNullException(nameof(builder));
-		}
-		builder.Add(endpointBuilder =>
-		{
-			var originalRequestDelegate = endpointBuilder.RequestDelegate;
-			endpointBuilder.RequestDelegate = async context =>
-			{
-				var validator = context.RequestServices.GetService<IValidator<TType>>();
+    public static RouteHandlerBuilder WithValidator<TType>(
+        this RouteHandlerBuilder builder) where TType : class
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+        builder.Add(endpointBuilder =>
+        {
+            var originalRequestDelegate = endpointBuilder.RequestDelegate;
+            endpointBuilder.RequestDelegate = async context =>
+            {
+                var validator = context.RequestServices.GetService<IValidator<TType>>();
 
-				if (validator is null)
-				{
-					await originalRequestDelegate!(context);
-					return;
-				}
+                if (validator is null)
+                {
+                    await originalRequestDelegate!(context);
+                    return;
+                }
 
-				context.Request.EnableBuffering();
-				var model = await context.Request.ReadFromJsonAsync<TType>();
-				if (model is null)
-				{
-					context.Response.StatusCode = 400;
-					await context.Response.WriteAsJsonAsync(new
-					{
-						error = "Couldn't map the model from the request body"
-					});
-					return;
-				}
+                context.Request.EnableBuffering();
+                var model = await context.Request.ReadFromJsonAsync<TType>();
+                if (model is null)
+                {
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        error = "Couldn't map the model from the request body"
+                    });
+                    return;
+                }
 
-				var result = await validator.ValidateAsync(model);
-				if (!result.IsValid)
-				{
-					context.Response.StatusCode = 400;
-					await context.Response.WriteAsJsonAsync(new { errors = result.Errors });
-					return;
-				}
+                var result = await validator.ValidateAsync(model);
+                if (!result.IsValid)
+                {
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsJsonAsync(new { errors = result.Errors });
+                    return;
+                }
 
-				context.Request.Body.Position = 0;
-				await originalRequestDelegate!(context);
-			};
-		});
-		return builder;
-	}
+                context.Request.Body.Position = 0;
+                await originalRequestDelegate!(context);
+            };
+        });
+        return builder;
+    }
 }
 
