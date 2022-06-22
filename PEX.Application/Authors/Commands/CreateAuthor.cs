@@ -5,6 +5,7 @@ using MediatR;
 using PEX.Application.Authors.Models;
 using PEX.Domain.Model;
 using PEX.Infrastructure.Database;
+using PEX.Infrastructure.Repository.Contracts;
 
 namespace PEX.Application.Authors.Commands;
 public static class CreateAuthor
@@ -16,13 +17,13 @@ public static class CreateAuthor
 
     public class Handler : IRequestHandler<Command, AuthorGetDto>
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAuthorRepository _repository;
         private readonly IMapper _mapper;
 
-        public Handler(ApplicationDbContext context, IMapper mapper)
+        public Handler(IMapper mapper, IAuthorRepository repository)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repository = repository;
         }
 
         public async Task<AuthorGetDto> Handle(Command request, CancellationToken cancellationToken)
@@ -33,8 +34,7 @@ public static class CreateAuthor
             }
 
             var toAdd = _mapper.Map<Author>(request.AuthorDto);
-            _context.Authors.Add(toAdd);
-            await _context.SaveChangesAsync(cancellationToken);
+            await _repository.AddAsync(toAdd, cancellationToken);
             return _mapper.Map<AuthorGetDto>(toAdd);
         }
     }

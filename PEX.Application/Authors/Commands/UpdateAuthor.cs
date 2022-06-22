@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 using PEX.Infrastructure.Database;
+using PEX.Infrastructure.Repository.Contracts;
 
 namespace PEX.Application.Authors.Commands;
 public static class UpdateAuthor
@@ -19,12 +20,13 @@ public static class UpdateAuthor
 
     public class Handler : IRequestHandler<Command>
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IAuthorRepository _repository;
 
 
-        public Handler(ApplicationDbContext context)
+
+        public Handler(IAuthorRepository repository)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _repository = repository;
         }
 
         public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
@@ -33,8 +35,8 @@ public static class UpdateAuthor
             {
                 throw new ArgumentNullException(nameof(request));
             }
+            var author = await _repository.GetAsync(request.AuthorId);
 
-            var author = await _context.Authors.FirstOrDefaultAsync(a => a.Id == request.AuthorId, cancellationToken);
             if (author is not null)
             {
                 author.FirstName = request.FirstName;
@@ -43,7 +45,7 @@ public static class UpdateAuthor
                 author.DateOfBirth = request.DateOfBirth;
             }
 
-            await _context.SaveChangesAsync(cancellationToken);
+            await _repository.UpdateAsync(author!.Id, author);
             return Unit.Value;
         }
     }
