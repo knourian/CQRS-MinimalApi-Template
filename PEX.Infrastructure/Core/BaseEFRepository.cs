@@ -30,10 +30,10 @@ public abstract class BaseEFRepository<T, TKey> : IBaseRepository<T, TKey>
 
     //
     #region Add ...
-    public async Task<T> AddAsync(T item, bool saveChanges = true)
+    public async Task<T> AddAsync(T item, CancellationToken cancellationToken, bool saveChanges = true)
     {
         //
-        var entry = await _dbSet.AddAsync(item);
+        var entry = await _dbSet.AddAsync(item, cancellationToken);
 
         //
         if (saveChanges)
@@ -48,7 +48,7 @@ public abstract class BaseEFRepository<T, TKey> : IBaseRepository<T, TKey>
         return result;
     }
 
-    public async Task<T> AddOrUpdateAsync(T item, bool saveChanges = true)
+    public async Task<T> AddOrUpdateAsync(T item, CancellationToken cancellationToken, bool saveChanges = true)
     {
         //
         TKey? key = GetKey(item);
@@ -59,10 +59,7 @@ public abstract class BaseEFRepository<T, TKey> : IBaseRepository<T, TKey>
         var isExists = await IsExistsAsync(key);
         if (!isExists)
         {
-            return await AddAsync(
-                item,
-                saveChanges
-            );
+            return await AddAsync(item, cancellationToken, saveChanges);
         }
 
         //
@@ -79,10 +76,10 @@ public abstract class BaseEFRepository<T, TKey> : IBaseRepository<T, TKey>
         return entry.Entity;
     }
 
-    public async Task AddRangeAsync(IEnumerable<T> items, bool saveChanges = true)
+    public async Task AddRangeAsync(IEnumerable<T> items, CancellationToken cancellationToken, bool saveChanges = true)
     {
         //
-        await _dbSet.AddRangeAsync(items);
+        await _dbSet.AddRangeAsync(items, cancellationToken);
 
         //
         if (saveChanges)
@@ -177,12 +174,9 @@ public abstract class BaseEFRepository<T, TKey> : IBaseRepository<T, TKey>
         return result;
     }
 
-    public Task<IEnumerable<T>> GetAllAsync(bool containsDetail = false)
+    public Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken, bool containsDetail = false)
     {
-        return Task.Run(() => GetDbSet(
-               containsDetail: containsDetail
-           )
-           .AsEnumerable());
+        return Task.Run(() => GetDbSet(containsDetail: containsDetail).AsEnumerable(), cancellationToken);
     }
 
     public async Task<T> FindOneAsync(Expression<Func<T, bool>> expression, bool containsDetail = false)

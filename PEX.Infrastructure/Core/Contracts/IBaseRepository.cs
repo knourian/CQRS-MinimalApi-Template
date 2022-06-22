@@ -11,53 +11,24 @@ where T : BaseEntity<TKey>
 {
     //
     #region Add ...
-    Task<T> AddAsync(
-        T item,
-        bool saveChanges = true
-    );
-    Task<T> AddOrUpdateAsync(
-        T item,
-        bool saveChanges = true
-    );
-    Task AddRangeAsync(
-        IEnumerable<T> items,
-        bool saveChanges = true
-    );
+    Task<T> AddAsync(T item, CancellationToken cancellationToken, bool saveChanges = true);
+    Task<T> AddOrUpdateAsync(T item, CancellationToken cancellationToken, bool saveChanges = true);
+    Task AddRangeAsync(IEnumerable<T> items, CancellationToken cancellationToken, bool saveChanges = true);
     #endregion
 
     //
     #region Remove ...
-    Task<T> RemoveAsync(
-        TKey id,
-        bool saveChanges = true
-    );
-    Task<T> RemoveAsync(
-        T item,
-        bool saveChanges = true
-    );
-    Task RemoveRangeAsync(
-        IEnumerable<T> items,
-        bool saveChanges = true
-    );
+    Task<T> RemoveAsync(TKey id, bool saveChanges = true);
+    Task<T> RemoveAsync(T item, bool saveChanges = true);
+    Task RemoveRangeAsync(IEnumerable<T> items, bool saveChanges = true);
     #endregion
 
     //
     #region Retrieve ...
-    Task<T> GetAsync(
-        TKey id,
-        bool containsDetail = false
-    );
-    Task<IEnumerable<T>> GetAllAsync(
-        bool containsDetail = false
-    );
-    Task<T> FindOneAsync(
-        Expression<Func<T, bool>> expression,
-        bool containsDetail = false
-    );
-    Task<IEnumerable<T>> FindManyAsync(
-        Expression<Func<T, bool>> expression,
-        bool containsDetail = false
-    );
+    Task<T> GetAsync(TKey id, bool containsDetail = false);
+    Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken, bool containsDetail = false);
+    Task<T> FindOneAsync(Expression<Func<T, bool>> expression, bool containsDetail = false);
+    Task<IEnumerable<T>> FindManyAsync(Expression<Func<T, bool>> expression, bool containsDetail = false);
     #endregion
 
     //
