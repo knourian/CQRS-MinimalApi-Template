@@ -215,3 +215,8 @@ dotnet_diagnostic.HAA0505.severity = silent
 
 # force file scoped namespaces
 csharp_style_namespace_declarations = file_scoped:warning
+
+
+
+# False Positive ignore
+dotnet_diagnostic.S1172.severity = none
